@@ -1,5 +1,13 @@
+import Header from "../Components/Header";
+import Footer from "../Components/Footer";
+
 const Login = () => {
-  return <div></div>;
+  return (
+    <>
+      <Header />
+      <Footer />
+    </>
+  );
 };
 
 export default Login;

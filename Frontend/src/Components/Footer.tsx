@@ -4,18 +4,17 @@ import { FaLinkedin } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="bg-base-200 text-base-content px-10 py-16">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 items-start">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 items-start">
+        {/* Brand Section */}
         <aside>
-          <h2 className="text-3xl font-bold text-primary mb-2">
-            Karthick Prabakaran
-          </h2>
+          <h2 className="text-3xl font-bold text-primary mb-2">Newsly</h2>
           <p className="text-lg text-gray-600 leading-relaxed">
-            Providing reliable software solutions since{" "}
-            <span className="font-semibold text-gray-800">2021</span>.
+            Get to know around you instantly.
           </p>
         </aside>
 
-        <nav className="flex flex-col sm:items-center lg:items-start">
+        {/* Menu Section */}
+        <nav className="flex flex-col sm:items-start">
           <h6 className="footer-title text-lg font-semibold mb-3">Menu</h6>
           <a href="#" className="link link-hover text-gray-700 text-base mb-1">
             About
@@ -28,7 +27,22 @@ const Footer = () => {
           </a>
         </nav>
 
-        <nav className="flex flex-col sm:items-center lg:items-end">
+        {/* Sources Section */}
+        <nav className="flex flex-col sm:items-start">
+          <h6 className="footer-title text-lg font-semibold mb-3">Sources</h6>
+          <a href="#" className="link link-hover text-gray-700 text-base mb-1">
+            About
+          </a>
+          <a href="#" className="link link-hover text-gray-700 text-base mb-1">
+            Features
+          </a>
+          <a href="#" className="link link-hover text-gray-700 text-base mb-1">
+            Contact
+          </a>
+        </nav>
+
+        {/* Social Section */}
+        <nav className="flex flex-col sm:items-end">
           <h6 className="footer-title text-lg font-semibold mb-3">Social</h6>
           <div className="flex gap-5 text-3xl">
             <a
@@ -53,6 +67,7 @@ const Footer = () => {
         </nav>
       </div>
 
+      {/* Footer Bottom */}
       <div className="mt-12 border-t border-gray-300 pt-6 text-center text-sm text-gray-500">
         © {new Date().getFullYear()} Karthick Prabakaran. All rights reserved.
       </div>
