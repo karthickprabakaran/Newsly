@@ -9,7 +9,7 @@ import HeroSection from "./Components/Hero1.jsx";
 function App() {
   return (
     <>
-      <HeroSection />
+    <Landing />
     </>
   );
 }
