@@ -1,70 +1,52 @@
+import { FaChevronDown, FaSearch, FaRegBookmark } from "react-icons/fa";
+
 const Header = () => {
   return (
-    <div>
-      <div className="navbar bg-base-100 shadow-sm">
-        <div className="navbar-start">
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {" "}
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />{" "}
-              </svg>
+    <header className="w-full bg-white shadow-sm px-8">
+      <div className="max-w-[1440px] mx-auto flex items-center h-16 justify-between">
+        {/* Left: Logo */}
+        <div className="flex items-center gap-8 flex-shrink-0">
+          <span className="text-orange-600 font-bold text-xl">Newsly</span>
+          <nav className="hidden md:flex gap-6 text-gray-800 text-[16px]">
+            <div className="relative group cursor-pointer flex items-center gap-1 font-medium">
+              Categories <FaChevronDown className="text-xs" />
+              {/* Dropdown placeholder: implement later */}
             </div>
-            <ul
-              tabIndex="-1"
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-            >
-              <li>
-                <a>Item 1</a>
-              </li>
-              <li>
-                <a>Parent</a>
-                <ul className="p-2">
-                  <li>
-                    <a>Submenu 1</a>
-                  </li>
-                  <li>
-                    <a>Submenu 2</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a>Item 3</a>
-              </li>
-            </ul>
+            <a className="hover:text-orange-600 transition font-medium cursor-pointer">News</a>
+            <a className="hover:text-orange-600 transition font-medium cursor-pointer">Suggested</a>
+            <a className="hover:text-orange-600 transition font-medium cursor-pointer">Contact Newsly</a>
+          </nav>
+        </div>
+        {/* Center: Fills whitespace (optional for future features) */}
+        <div className="flex-1" />
+        {/* Right section */}
+        <div className="flex items-center gap-4">
+          {/* Search box */}
+          <div className="bg-gray-100 flex items-center rounded-xl px-4 py-1 w-[220px] max-w-xs">
+            <input
+              type="text"
+              placeholder="Search Anything"
+              className="bg-gray-100 outline-none flex-1 text-sm py-1"
+            />
+            <FaSearch className="text-xl text-gray-700 ml-2" />
           </div>
-          <a className="btn btn-ghost text-xl">Newsly</a>
-        </div>
-        <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 text-[18px]">
-            <li>
-              <a>About</a>
-            </li>
-            <li>
-              <a>Features</a>
-            </li>
-            <li>
-              <a>Contact</a>
-            </li>
-          </ul>
-        </div>
-        <div className="navbar-end">
-          <a className="btn btn-ghost">Login</a>
-          <a className="btn">SignUp</a>
+          {/* User card */}
+          <div className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded-xl">
+            <img
+              src="https://randomuser.me/api/portraits/men/32.jpg"
+              alt="avatar"
+              className="w-8 h-8 rounded-lg object-cover"
+            />
+            <span className="text-sm font-medium text-gray-900 px-1">Behzad</span>
+            <FaChevronDown className="text-xs text-gray-700" />
+          </div>
+          {/* Bookmark icon */}
+          <div className="bg-gray-100 p-2 rounded-xl flex items-center cursor-pointer">
+            <FaRegBookmark className="text-xl text-gray-700" />
+          </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 
