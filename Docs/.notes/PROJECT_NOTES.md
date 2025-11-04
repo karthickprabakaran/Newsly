@@ -19,8 +19,8 @@ App Overview:
 
 Features of the App:
 
--> Signup
--> Login
+-> Signup (google,mailid, apple)
+-> Login (google,mailid, apple)
 -> Sessions for 10mins
 -> View Recent News
 -> filter By Category
