@@ -1,8 +1,13 @@
 import { FaChevronDown, FaSearch, FaRegBookmark } from "react-icons/fa";
+import React from 'react';
 
-const Header = () => {
+interface HeaderProps {
+  transparent?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ transparent = false }) => {
   return (
-    <header className="w-full bg-white shadow-sm px-8">
+    <header className={`w-full ${transparent ? 'bg-transparent shadow-none' : 'bg-white shadow-sm'} px-8 transition-colors duration-300`}>
       <div className="max-w-[1440px] mx-auto flex items-center h-16 justify-between">
         {/* Left: Logo */}
         <div className="flex items-center gap-8 flex-shrink-0">
@@ -10,7 +15,6 @@ const Header = () => {
           <nav className="hidden md:flex gap-6 text-gray-800 text-[16px]">
             <div className="relative group cursor-pointer flex items-center gap-1 font-medium">
               Categories <FaChevronDown className="text-xs" />
-              {/* Dropdown placeholder: implement later */}
             </div>
             <a className="hover:text-orange-600 transition font-medium cursor-pointer">News</a>
             <a className="hover:text-orange-600 transition font-medium cursor-pointer">Suggested</a>
