@@ -1,7 +1,43 @@
+"use client";
 import { FaGoogle, FaGithub, FaApple } from "react-icons/fa";
-import Footer from "../Components/Footer";
-import Header from "../Components/Header";
+import { useState } from "react";
+import { supabase } from "../../../util/supabase";
+import Footer from "../../Components/Footer";
+import Header from "../../Components/Header";
 const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setMessage(null);
+    setLoading(true);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if(error) setMessage(error.message);
+    else setMessage("Login successful!");
+    setLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    setMessage(null);
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+    if (error) setMessage(error.message);
+    setLoading(false);
+  };
+  const handleAppleLogin = async () => {
+    setMessage(null);
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({ provider: 'apple' });
+    if (error) setMessage(error.message);
+    setLoading(false);
+  };
+
   return (
     <>
       <Header />
@@ -16,13 +52,16 @@ const LoginPage = () => {
               </h2>
 
               {/* Login Form */}
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleLogin}>
                 <div>
                   <label className="block mb-1 text-sm">Email address</label>
                   <input
                     type="email"
                     placeholder="Email address"
                     className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -31,6 +70,9 @@ const LoginPage = () => {
                     type="password"
                     placeholder="Password"
                     className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
                   />
                 </div>
 
@@ -47,10 +89,19 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   className="w-full py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                  disabled={loading}
                 >
-                  Sign in
+                  {loading ? "Signing in..." : "Sign in"}
                 </button>
               </form>
+              {/* Message display */}
+              {message && <div className="mt-2 text-center text-red-600">{message}</div>}
+
+              {/* New to the app link */}
+              <div className="mt-4 text-center">
+                <span className="text-sm text-gray-700">New to the app? </span>
+                <a href="/signup" className="text-purple-600 text-sm underline hover:text-purple-700">Sign up here</a>
+              </div>
 
               {/* OR separator */}
               <div className="flex items-center my-6">
@@ -61,10 +112,10 @@ const LoginPage = () => {
 
               {/* Social Buttons */}
               <div className="flex gap-4">
-                <button className="flex-1 flex items-center justify-center py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors">
+                <button type="button" onClick={handleGoogleLogin} className="flex-1 flex items-center justify-center py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors">
                   <FaGoogle className="mr-2" /> Google
                 </button>
-                <button className="flex-1 flex items-center justify-center py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors">
+                <button type="button" onClick={handleAppleLogin} className="flex-1 flex items-center justify-center py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors">
                   <FaApple className="mr-2" /> Apple
                 </button>
               </div>
