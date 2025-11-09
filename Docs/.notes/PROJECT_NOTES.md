@@ -1,16 +1,11 @@
-FRONT_END:
+App : 
 
-
-react + typescript + tailwind 
-
-BACKEND:
-
-java + springboot + jwt 
+nextjs
 
 DATABASE:
 
-mysql + redis (later)
 
+postgressql
 
 App Overview: 
 
