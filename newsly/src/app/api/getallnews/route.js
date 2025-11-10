@@ -33,18 +33,54 @@ function extractImage(item) {
   return '/no-image.png';
 }
 
-function extractCategory(item, fallbackCategory) {
-  // For RSS: item.category can be string or array
-  let category = fallbackCategory || 'General';
-  if (item && item.category) {
-    if (Array.isArray(item.category)) {
-      category = item.category.join(', ');
-    } else {
-      category = item.category;
-    }
+function normalizeCategoryValue(value) {
+  if (!value) return null;
+  if (Array.isArray(value)) {
+    const first = value.find(Boolean);
+    return normalizeCategoryValue(first);
   }
-  if (typeof category === 'string') return category.toLowerCase();
-  return 'general';
+  if (typeof value === 'object') {
+    if (value.term) return normalizeCategoryValue(value.term);
+    if (value.label) return normalizeCategoryValue(value.label);
+    if (value['#text']) return normalizeCategoryValue(value['#text']);
+  }
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/\s+/g, ' ').trim();
+    return cleaned.length ? cleaned.toLowerCase() : null;
+  }
+  return null;
+}
+
+function extractCategory(item, fallbackCategory) {
+  const candidates = [];
+  if (item.categories && item.categories.length) candidates.push(item.categories);
+  if (item.category) candidates.push(item.category);
+  if (item['dc:subject']) candidates.push(item['dc:subject']);
+  if (item['media:category']) candidates.push(item['media:category']);
+  if (item['itunes:category']) candidates.push(item['itunes:category']);
+  if (item.tags) candidates.push(item.tags);
+
+  for (const candidate of candidates) {
+    const normalized = normalizeCategoryValue(candidate);
+    if (normalized) return normalized;
+  }
+
+  return (fallbackCategory || 'general').toLowerCase();
+}
+
+function normalizeJsonCategory(item, fallback) {
+  const candidates = [
+    item.category,
+    item.categories,
+    item.topic,
+    item.section,
+    item.tag,
+  ];
+  for (const candidate of candidates) {
+    const normalized = normalizeCategoryValue(candidate);
+    if (normalized) return normalized;
+  }
+  return (fallback || 'general').toLowerCase();
 }
 
 function shuffle(array) {
@@ -85,7 +121,7 @@ export async function GET(req) {
                   pubDate: item.timestamp || item.date || '',
                   content: item.content || item.description || '',
                   source: source.name,
-                  category: (item.category || source.category || 'general').toLowerCase(),
+                  category: normalizeJsonCategory(item, source.category),
                   imageUrl: item.image || item.urlToImage || '/no-image.png',
                 }));
               }
@@ -97,7 +133,7 @@ export async function GET(req) {
                   pubDate: item.publishedAt || '',
                   content: item.content || item.description || '',
                   source: source.name,
-                  category: (item.category || source.category || 'general').toLowerCase(),
+                  category: normalizeJsonCategory(item, item.source?.name || source.category),
                   imageUrl: item.urlToImage || "/no-image.png",
                 }));
               }

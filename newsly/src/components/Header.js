@@ -51,17 +51,6 @@ const Header = ({ transparent = false }) => {
         <div className="flex-1" />
         {/* Right section */}
         <div className="flex items-center gap-4">
-          {/* Search box - show only when logged in */}
-          {!loadingUser && user && (
-            <div className="bg-gray-100 flex items-center rounded-xl px-4 py-1 w-[220px] max-w-xs">
-              <input
-                type="text"
-                placeholder="Search Anything"
-                className="bg-gray-100 outline-none flex-1 text-sm py-1"
-              />
-              <FaSearch className="text-xl text-gray-700 ml-2" />
-            </div>
-          )}
           {/* User card or auth buttons */}
           {loadingUser ? null : user ? (
             <div className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded-xl">
