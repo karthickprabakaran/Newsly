@@ -2,9 +2,9 @@ import React from "react";
 
 export default function StandardNewsCard({ imageUrl, title, content, author, pubDate, link, category }) {
   return (
-    <div className="rounded-lg shadow bg-white overflow-hidden flex flex-col">
+    <div className="rounded-lg shadow bg-white overflow-hidden flex flex-col min-h-[375px]">
       {imageUrl && (
-        <img src={imageUrl} alt={title} className="h-40 w-full object-cover" />
+        <img src={imageUrl} alt={title} className="h-40 w-full object-cover flex-shrink-0" style={{ minHeight: "160px" }} />
       )}
       <div className="p-4 flex-1 flex flex-col">
         <h3 className="font-semibold text-black text-md mb-2 line-clamp-2">{title}</h3>
@@ -15,7 +15,7 @@ export default function StandardNewsCard({ imageUrl, title, content, author, pub
               {author ? author.charAt(0) : "?"}
             </div>
             <div>
-              <div className="text-sm font-semibold">{author}</div>
+              <div className="text-sm text-black font-semibold">{author}</div>
               <div className="text-xs text-gray-500">{pubDate && new Date(pubDate).toLocaleDateString()}</div>
             </div>
           </div>
