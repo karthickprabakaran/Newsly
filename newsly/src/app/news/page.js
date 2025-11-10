@@ -1,11 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../../util/supabase";
 import StandardNewsCard from "@/components/StandardNewsCard";
 import SimpleNewsCard from "@/components/SimpleNewsCard";
 
 const PAGE_SIZE = 20;
 
 export default function NewsPage() {
+  const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,6 +17,19 @@ export default function NewsPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/login");
+      } else {
+        setIsCheckingAuth(false);
+      }
+    }
+    checkAuth();
+  }, [router]);
+
+  useEffect(() => {
+    if (isCheckingAuth) return;
     async function fetchAllNews(pageNum) {
       setLoading(true);
       try {
@@ -28,8 +45,9 @@ export default function NewsPage() {
       }
     }
     fetchAllNews(page);
-  }, [page]);
+  }, [page, isCheckingAuth]);
 
+  if (isCheckingAuth) return null;
   if (loading) return <div className="p-6">Loading news...</div>;
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
