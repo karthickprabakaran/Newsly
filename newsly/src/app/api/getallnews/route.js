@@ -1,92 +1,123 @@
-import RSSParser from 'rss-parser';
+import { XMLParser } from 'fast-xml-parser';
 
 const NEWS_SOURCES = [
-    { name: 'Times of India', url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', category: 'General', type: 'rss' },
-    { name: 'NDTV News', url: 'https://feeds.feedburner.com/ndtvnews-latest', category: 'General', type: 'rss' },
-    { name: 'Oneindia', url: 'https://www.oneindia.com/rss/feeds/news-india-fb.xml', category: 'General', type: 'rss' },
-    { name: 'ABP Live', url: 'https://news.abplive.com/news/india/feed', category: 'General', type: 'rss' },
-    { name: 'BBC Tamil', url: 'https://feeds.bbci.co.uk/tamil/rss.xml', category: 'General', type: 'rss' },
-    { name: 'Knowivate', url: 'https://knowivate-api.vercel.app/news/all', category: 'General', type: 'json' },
-    { name: 'NewsAPI', url: 'https://saurav.tech/NewsAPI/top-headlines/category/general/in.json', category: 'General', type: 'json' },
+    { name: 'Times of India', url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', category: 'General' },
+    { name: 'NDTV News', url: 'https://feeds.feedburner.com/ndtvnews-latest', category: 'General' },
+    { name: 'The Hindu', url: 'https://www.thehindu.com/news/feeder/default.rss', category: 'General' },
+    { name: 'Indian Express', url: 'https://indianexpress.com/feed/', category: 'General' },
+    { name: 'Economic Times', url: 'https://economictimes.indiatimes.com/rssfeedstopstories.cms', category: 'General' },
+    { name: 'BBC Tamil', url: 'https://feeds.bbci.co.uk/tamil/rss.xml', category: 'General' },
 ];
 
-const rssParser = new RSSParser();
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: '@_',
+  textNodeName: '#text',
+  cdataTagName: '__cdata',
+  parseAttributeValue: true,
+  trimValues: true,
+  arrayMode: false,
+});
+
+function normaliseCategory(rawCategory, fallback = 'general') {
+  const toLower = (value) => (value ? value.toLowerCase().trim() : null);
+
+  if (!rawCategory) return fallback.toLowerCase();
+
+  if (Array.isArray(rawCategory)) {
+    const distinct = Array.from(
+      new Set(
+        rawCategory
+          .map((entry) => normaliseCategory(entry, fallback))
+          .filter(Boolean)
+          .flatMap((cat) => cat.split(',').map((part) => part.trim()).filter(Boolean))
+      )
+    );
+    return distinct.length ? distinct.join(', ') : fallback.toLowerCase();
+  }
+
+  if (typeof rawCategory === 'object') {
+    return (
+      normaliseCategory(rawCategory['#text'], fallback) ||
+      normaliseCategory(rawCategory['__cdata'], fallback) ||
+      normaliseCategory(rawCategory['@_label'], fallback) ||
+      normaliseCategory(rawCategory['@_term'], fallback) ||
+      normaliseCategory(rawCategory.value, fallback) ||
+      fallback.toLowerCase()
+    );
+  }
+
+  if (typeof rawCategory === 'string') {
+    const cleaned = toLower(rawCategory);
+    return cleaned || fallback.toLowerCase();
+  }
+
+  return fallback.toLowerCase();
+}
 
 function extractImage(item) {
-  if (item['media:content']?.url) return item['media:content'].url;
-  if (item.enclosure?.url) return item.enclosure.url;
-  if (item['media:thumbnail']?.url) return item['media:thumbnail'].url;
-  if (Array.isArray(item['media:content']) && item['media:content'][0]?.url) return item['media:content'][0].url;
-  if (Array.isArray(item['media:thumbnail']) && item['media:thumbnail'][0]?.url) return item['media:thumbnail'][0].url;
-  if (item.content) {
-    const match = item.content.match(/<img[^>]+src=["']([^"'>]+)["']/i);
-    if (match && match[1]) return match[1];
-  }
-  if (item.description) {
-    const match = item.description.match(/<img[^>]+src=["']([^"'>]+)["']/i);
-    if (match && match[1]) return match[1];
-  }
-  if (item.summary) {
-    const match = item.summary.match(/<img[^>]+src=["']([^"'>]+)["']/i);
-    if (match && match[1]) return match[1];
-  }
-  return '/no-image.png';
+  const extractUrl = (entry) => {
+    if (!entry) return null;
+    if (Array.isArray(entry)) {
+      for (const value of entry) {
+        const url = extractUrl(value);
+        if (url) return url;
+      }
+      return null;
+    }
+    if (typeof entry === 'string') {
+      return entry.startsWith('http') ? entry : null;
+    }
+    return (
+      entry['@_url'] ||
+      entry.url ||
+      entry.link ||
+      (entry['#text'] && entry['#text'].startsWith('http') ? entry['#text'] : null)
+    );
+  };
+
+  return (
+    extractUrl(item['media:thumbnail']) ||
+    extractUrl(item['media:content']) ||
+    extractUrl(item.enclosure) ||
+    extractImageFromHtml(item.description || item['content:encoded']) ||
+    '/no-image.png'
+  );
 }
 
-function normalizeCategoryValue(value) {
-  if (!value) return null;
-  if (Array.isArray(value)) {
-    const first = value.find(Boolean);
-    return normalizeCategoryValue(first);
-  }
-  if (typeof value === 'object') {
-    if (value.term) return normalizeCategoryValue(value.term);
-    if (value.label) return normalizeCategoryValue(value.label);
-    if (value['#text']) return normalizeCategoryValue(value['#text']);
-  }
-  if (typeof value === 'string') {
-    const cleaned = value.replace(/\s+/g, ' ').trim();
-    return cleaned.length ? cleaned.toLowerCase() : null;
-  }
-  return null;
+function extractImageFromHtml(html) {
+  if (!html) return null;
+  const match = html.match(/<img[^>]+src=["']([^"'>]+)["']/i);
+  return match ? match[1] : null;
 }
 
-function extractCategory(item, fallbackCategory) {
-  const candidates = [];
-  if (item.categories && item.categories.length) candidates.push(item.categories);
-  if (item.category) candidates.push(item.category);
-  if (item['dc:subject']) candidates.push(item['dc:subject']);
-  if (item['media:category']) candidates.push(item['media:category']);
-  if (item['itunes:category']) candidates.push(item['itunes:category']);
-  if (item.tags) candidates.push(item.tags);
+function parseRss(xmlText, source) {
+  try {
+    const parsed = xmlParser.parse(xmlText);
+    const items = parsed?.rss?.channel?.item;
+    if (!items) return [];
+    const array = Array.isArray(items) ? items : [items];
 
-  for (const candidate of candidates) {
-    const normalized = normalizeCategoryValue(candidate);
-    if (normalized) return normalized;
+    return array.map((item, index) => ({
+      id: `${source.name}-${index}`,
+      title: item.title || '',
+      link: item.link || '',
+      pubDate: item.pubDate || '',
+      content: item.description || item['content:encoded'] || '',
+      source: source.name,
+      category: normaliseCategory(item.category, source.category),
+      imageUrl: extractImage(item),
+    }));
+  } catch (error) {
+    console.error(`Failed to parse RSS for ${source.name}:`, error);
+    return [];
   }
-
-  return (fallbackCategory || 'general').toLowerCase();
-}
-
-function normalizeJsonCategory(item, fallback) {
-  const candidates = [
-    item.category,
-    item.categories,
-    item.topic,
-    item.section,
-    item.tag,
-  ];
-  for (const candidate of candidates) {
-    const normalized = normalizeCategoryValue(candidate);
-    if (normalized) return normalized;
-  }
-  return (fallback || 'general').toLowerCase();
 }
 
 function shuffle(array) {
-  let currentIndex = array.length, randomIndex;
+  let currentIndex = array.length;
   while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
+    const randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
     [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
   }
@@ -97,70 +128,42 @@ export async function GET(req) {
   try {
     const articles = (
       await Promise.all(
-        NEWS_SOURCES.map(async source => {
+        NEWS_SOURCES.map(async (source) => {
           try {
-            if (source.type === 'rss') {
-              const feed = await rssParser.parseURL(source.url);
-              return feed.items.map(item => ({
-                title: item.title,
-                link: item.link,
-                pubDate: item.pubDate,
-                content: item.content || item.contentSnippet || "",
-                source: source.name,
-                category: extractCategory(item, source.category),
-                imageUrl: extractImage(item),
-              }));
-            } else if (source.type === 'json') {
-              const res = await fetch(source.url);
-              const data = await res.json();
-              // Normalization for Knowivate
-              if (source.name === 'Knowivate') {
-                return (data.news || []).map(item => ({
-                  title: item.title,
-                  link: item.url,
-                  pubDate: item.timestamp || item.date || '',
-                  content: item.content || item.description || '',
-                  source: source.name,
-                  category: normalizeJsonCategory(item, source.category),
-                  imageUrl: item.image || item.urlToImage || '/no-image.png',
-                }));
-              }
-              // Normalization for NewsAPI
-              if (source.name === 'NewsAPI') {
-                return (data.articles || []).map(item => ({
-                  title: item.title,
-                  link: item.url,
-                  pubDate: item.publishedAt || '',
-                  content: item.content || item.description || '',
-                  source: source.name,
-                  category: normalizeJsonCategory(item, item.source?.name || source.category),
-                  imageUrl: item.urlToImage || "/no-image.png",
-                }));
-              }
-              return [];
-            }
-            return [];
-          } catch {
+            const response = await fetch(source.url, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                'Accept': 'application/rss+xml, application/xml;q=0.9,*/*;q=0.8',
+              },
+            });
+            if (!response.ok) throw new Error('Failed to fetch RSS');
+            const xmlText = await response.text();
+            return parseRss(xmlText, source);
+          } catch (error) {
+            console.error(`Error fetching ${source.name}:`, error);
             return [];
           }
         })
       )
     ).flat();
-    const shuffled = shuffle(articles);
-    // --- Pagination logic ---
+
+    shuffle(articles);
+
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '20');
     const startIndex = (page - 1) * limit;
-    const paginated = shuffled.slice(startIndex, startIndex + limit);
-    const totalPages = Math.ceil(shuffled.length / limit);
+    const paginated = articles.slice(startIndex, startIndex + limit);
+    const totalPages = Math.ceil(articles.length / limit) || 1;
+
     return Response.json({
       news: paginated,
-      totalItems: shuffled.length,
+      totalItems: articles.length,
       currentPage: page,
-      totalPages
+      totalPages,
     });
   } catch (error) {
-    return Response.json({ error: "Failed to fetch news." }, { status: 500 });
+    console.error('Failed to fetch news:', error);
+    return Response.json({ error: 'Failed to fetch news.' }, { status: 500 });
   }
 }
