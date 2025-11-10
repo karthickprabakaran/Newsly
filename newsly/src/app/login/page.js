@@ -1,14 +1,17 @@
 "use client";
 import { FaGoogle, FaGithub, FaApple } from "react-icons/fa";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "../../../util/supabase";
-import Footer from "../../Components/Footer";
-import Header from "../../Components/Header";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,9 +21,12 @@ const LoginPage = () => {
       email,
       password,
     });
-    if(error) setMessage(error.message);
-    else setMessage("Login successful!");
     setLoading(false);
+    if (error) {
+      setMessage(error.message);
+    } else {
+      router.push("/news");
+    }
   };
 
   const handleGoogleLogin = async () => {
