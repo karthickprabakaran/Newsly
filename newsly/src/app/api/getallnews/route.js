@@ -33,6 +33,20 @@ function extractImage(item) {
   return '/no-image.png';
 }
 
+function extractCategory(item, fallbackCategory) {
+  // For RSS: item.category can be string or array
+  let category = fallbackCategory || 'General';
+  if (item && item.category) {
+    if (Array.isArray(item.category)) {
+      category = item.category.join(', ');
+    } else {
+      category = item.category;
+    }
+  }
+  if (typeof category === 'string') return category.toLowerCase();
+  return 'general';
+}
+
 function shuffle(array) {
   let currentIndex = array.length, randomIndex;
   while (currentIndex !== 0) {
@@ -57,7 +71,7 @@ export async function GET(req) {
                 pubDate: item.pubDate,
                 content: item.content || item.contentSnippet || "",
                 source: source.name,
-                category: source.category,
+                category: extractCategory(item, source.category),
                 imageUrl: extractImage(item),
               }));
             } else if (source.type === 'json') {
@@ -71,7 +85,7 @@ export async function GET(req) {
                   pubDate: item.timestamp || item.date || '',
                   content: item.content || item.description || '',
                   source: source.name,
-                  category: source.category,
+                  category: (item.category || source.category || 'general').toLowerCase(),
                   imageUrl: item.image || item.urlToImage || '/no-image.png',
                 }));
               }
@@ -83,7 +97,7 @@ export async function GET(req) {
                   pubDate: item.publishedAt || '',
                   content: item.content || item.description || '',
                   source: source.name,
-                  category: source.category,
+                  category: (item.category || source.category || 'general').toLowerCase(),
                   imageUrl: item.urlToImage || "/no-image.png",
                 }));
               }
