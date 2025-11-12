@@ -1,14 +1,38 @@
-import { ApolloServer } from '@apollo/server';
-import { startServerAndCreateNextHandler } from '@as-integrations/next';
-import RSSParser from 'rss-parser';
+import { ApolloServer } from "@apollo/server";
+import { startServerAndCreateNextHandler } from "@as-integrations/next";
+import RSSParser from "rss-parser";
 
 const NEWS_SOURCES = [
-    { name: 'Times of India', url: 'https://timesofindia.indiatimes.com/rssfeedstopstories.cms', category: 'General' },
-    { name: 'NDTV News', url: 'https://feeds.feedburner.com/ndtvnews-latest', category: 'General' },
-    { name: 'The Hindu', url: 'https://www.thehindu.com/news/feeder/default.rss', category: 'General' },
-    { name: 'Indian Express', url: 'https://indianexpress.com/feed/', category: 'General' },
-    { name: 'Economic Times', url: 'https://economictimes.indiatimes.com/rssfeedstopstories.cms', category: 'General' },
-    { name: 'BBC Tamil', url: 'https://feeds.bbci.co.uk/tamil/rss.xml', category: 'General' },
+  {
+    name: "Times of India",
+    url: "https://timesofindia.indiatimes.com/rssfeedstopstories.cms",
+    category: "General",
+  },
+  {
+    name: "NDTV News",
+    url: "https://feeds.feedburner.com/ndtvnews-latest",
+    category: "General",
+  },
+  {
+    name: "The Hindu",
+    url: "https://www.thehindu.com/news/feeder/default.rss",
+    category: "General",
+  },
+  {
+    name: "Indian Express",
+    url: "https://indianexpress.com/feed/",
+    category: "General",
+  },
+  {
+    name: "Economic Times",
+    url: "https://economictimes.indiatimes.com/rssfeedstopstories.cms",
+    category: "General",
+  },
+  {
+    name: "BBC Tamil",
+    url: "https://feeds.bbci.co.uk/tamil/rss.xml",
+    category: "General",
+  },
 ];
 
 const typeDefs = `#graphql
@@ -36,7 +60,7 @@ const resolvers = {
           NEWS_SOURCES.map(async (source) => {
             try {
               const feed = await rssParser.parseURL(source.url);
-              return feed.items.map(item => ({
+              return feed.items.map((item) => ({
                 title: item.title,
                 link: item.link,
                 pubDate: item.pubDate,
@@ -47,12 +71,12 @@ const resolvers = {
             } catch {
               return [];
             }
-          })
+          }),
         )
       ).flat();
       return articles;
-    }
-  }
+    },
+  },
 };
 
 const server = new ApolloServer({ typeDefs, resolvers });

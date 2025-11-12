@@ -129,7 +129,7 @@ export default function NewsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {paginatedNews.map((item, idx) =>
-            item.source === "Times of India" ? (
+            item.imageUrl && item.source !== "Economic Times" ? (
               <StandardNewsCard
                 key={item.link || idx}
                 imageUrl={item.imageUrl}
