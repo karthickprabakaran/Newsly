@@ -3,40 +3,42 @@ import { FaChevronDown, FaSearch, FaRegBookmark } from "react-icons/fa";
 import React, { useEffect, useState, useRef } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../util/supabase";
+import { useSession } from "@/context/SessionContext";
 import { useCategory } from "@/context/CategoryContext";
+import { useCallback } from "react";
 
 const Header = ({ transparent = false }) => {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-  const [loadingUser, setLoadingUser] = useState(true);
+  const { user, loading: loadingUser, handleSessionTimeout } = useSession();
   const [categories, setCategories] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const { selectedCategories, toggleCategory, clearCategories } = useCategory();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setLoadingUser(false);
-    };
-    getUser();
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
 
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/categories');
+      const { categories } = await res.json();
+      setCategories(categories || []);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
   }, []);
 
   useEffect(() => {
     if (user) {
-      fetchCategories();
+      const fetchCategoriesAsync = async () => {
+        try {
+          await fetchCategories();
+        } catch (error) {
+          console.error('Failed to fetch categories:', error);
+        }
+      };
+      fetchCategoriesAsync();
     }
-  }, [user]);
+  }, [user, fetchCategories]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -48,19 +50,8 @@ const Header = ({ transparent = false }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch('/api/categories');
-      const { categories } = await res.json();
-      setCategories(categories || []);
-    } catch (error) {
-      console.error('Failed to fetch categories:', error);
-    }
-  };
-
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
+    handleSessionTimeout();
   };
 
   return (
@@ -124,7 +115,7 @@ const Header = ({ transparent = false }) => {
               </div>
               <Link href="/news" className="hover:text-orange-600 transition font-medium cursor-pointer">News</Link>
               <Link href="/suggestednews" className="hover:text-orange-600 transition font-medium cursor-pointer">Suggested</Link>
-              <Link href="/contact" className="hover:text-orange-600 transition font-medium cursor-pointer">Contact Newsly</Link>
+              <Link href="/contact" className="hover:text-orange-600 transition font-medium cursor-pointer">Contact</Link>
             </nav>
           )}
         </div>

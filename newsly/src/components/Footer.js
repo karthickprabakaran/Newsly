@@ -11,7 +11,7 @@ const Footer = () => {
             <span className="inline-block w-2 h-2 bg-red-500 rounded-full mr-2"></span>Newsly
           </h2>
           <p className="text-gray-700 text-sm leading-relaxed">
-            Newsly is your go-to platform for staying informed and exploring the India's latest news, trends, and insights. Stay up-to-date with personalized suggestions, in-depth stories, and curated categories—all in one place.
+            Newsly is your go-to platform for staying informed and exploring India&apos;s latest news, trends, and insights. Stay up-to-date with personalized suggestions, in-depth stories, and curated categories—all in one place.
           </p>
         </div>
         {/* Categories */}

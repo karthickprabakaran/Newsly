@@ -3,6 +3,7 @@ import { FaGoogle, FaApple } from "react-icons/fa";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../util/supabase";
+import { useSession } from "@/context/SessionContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -10,12 +11,13 @@ const LoginPage = () => {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { resetSessionTimer } = useSession();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage(null);
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -23,6 +25,7 @@ const LoginPage = () => {
     if (error) {
       setMessage(error.message);
     } else {
+      resetSessionTimer();
       router.push("/news");
     }
   };
@@ -30,14 +33,24 @@ const LoginPage = () => {
   const handleGoogleLogin = async () => {
     setMessage(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
     if (error) setMessage(error.message);
     setLoading(false);
   };
   const handleAppleLogin = async () => {
     setMessage(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'apple' });
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: 'apple',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
     if (error) setMessage(error.message);
     setLoading(false);
   };

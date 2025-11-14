@@ -73,10 +73,7 @@ const NEWS_SOURCES = [
 
 
 Still Need to do : 
-
--- complete the edit profile (fix the population on signup)
--- Implement the Sessions (try the Inbuild using the Supabase)
--- Complete the Signup using the Google and the Apple
--- Make the UI changes 
--- Launch the App after the Testing
--- note the special things in the app 
+	•	suggested/news filtering by user preferred category
+	•	navigation page → filter news by suggested category
+	•	contact page (public, auto-fill if logged in)
+	•	Supabase session check + profiles table (preferred_category)
