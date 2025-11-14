@@ -146,11 +146,11 @@ const Header = ({ transparent = false }) => {
             </div>
           )}
           {/* Bookmark icon - only for logged in users */}
-          {!loadingUser && user && (
+          {/* {!loadingUser && user && (
             <div className="bg-gray-100 p-2 rounded-xl flex items-center cursor-pointer">
               <FaRegBookmark className="text-xl text-gray-700" />
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </header>
