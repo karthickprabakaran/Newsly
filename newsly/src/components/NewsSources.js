@@ -40,8 +40,8 @@ const SOURCES = [
 ];
 
 const DotLabel = ({ children }) => (
-  <div className="flex items-center gap-2 text-gray-800">
-    <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+  <div className="flex items-center gap-2 text-text-primary">
+    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
     <span className="text-[18px] font-medium">{children}</span>
   </div>
 );
@@ -51,9 +51,9 @@ const SourceCard = ({ name, logo, category, url }) => (
     href={url}
     target="_blank"
     rel="noopener noreferrer"
-    className="group block rounded-2xl bg-white shadow-[0_1px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.10)] transition p-6 text-center"
+    className="group block rounded-2xl bg-surface shadow-[0_1px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.10)] transition p-6 text-center"
   >
-    <div className="mx-auto mb-4 h-28 w-28 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+    <div className="mx-auto mb-4 h-28 w-28 rounded-xl overflow-hidden bg-background flex items-center justify-center">
       {/* logo */}
       <img
         src={logo}
@@ -61,8 +61,8 @@ const SourceCard = ({ name, logo, category, url }) => (
         className="h-14 w-14 object-contain"
       />
     </div>
-    <div className="text-sm text-gray-500 mb-6">{category}</div>
-    <div className="mx-auto inline-block rounded-xl bg-gray-100 px-5 py-3 text-gray-800 text-sm font-medium group-hover:bg-gray-200">
+    <div className="text-sm text-text-secondary mb-6">{category}</div>
+    <div className="mx-auto inline-block rounded-xl bg-background px-5 py-3 text-text-primary text-sm font-medium group-hover:bg-gray-200">
       {name}
     </div>
   </a>
@@ -74,7 +74,7 @@ const NewsSources = () => {
       <div className="max-w-6xl mx-auto px-4">
         {/* Heading Row */}
 
-        <h2 className="text-center text-3xl md:text-4xl font-semibold mb-10">
+        <h2 className="text-center text-3xl md:text-4xl font-semibold mb-10 text-text-primary">
           News Sources
         </h2>
 
@@ -89,7 +89,7 @@ const NewsSources = () => {
         <div className="flex justify-center mt-10">
           <a
             href="#"
-            className="inline-flex items-center gap-2 rounded-full bg-rose-500 hover:bg-rose-600 text-white px-5 py-3 text-sm font-medium shadow-md"
+            className="inline-flex items-center gap-2 rounded-full bg-primary hover:bg-primary-dark text-white px-5 py-3 text-sm font-medium shadow-md"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8 5v14l11-7z" />

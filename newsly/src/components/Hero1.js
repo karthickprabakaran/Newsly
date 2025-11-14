@@ -30,7 +30,7 @@ export default function HeroSection() {
           curated, categorized, and easy to search. Start your journey to stay
           informed now!
         </p>
-        <button className="bg-red-600 hover:bg-red-700 transition text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg">
+        <button className="bg-primary hover:bg-primary-dark transition text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg">
           Get Started
         </button>
       </div>

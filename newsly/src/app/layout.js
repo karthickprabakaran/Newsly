@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CategoryProvider } from "@/context/CategoryContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { SessionProvider } from "@/context/SessionContext";
 
 const geistSans = Geist({
@@ -25,13 +26,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}> 
         <SessionProvider>
-          <CategoryProvider>
-            <div className="min-h-screen flex flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </CategoryProvider>
+          <ThemeProvider>
+            <CategoryProvider>
+              <div className="min-h-screen flex flex-col">
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+            </CategoryProvider>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

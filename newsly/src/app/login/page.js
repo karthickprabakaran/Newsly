@@ -3,7 +3,6 @@ import { FaGoogle, FaApple } from "react-icons/fa";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../util/supabase";
-import { useSession } from "@/context/SessionContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +10,6 @@ const LoginPage = () => {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { resetSessionTimer } = useSession();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,7 +23,6 @@ const LoginPage = () => {
     if (error) {
       setMessage(error.message);
     } else {
-      resetSessionTimer();
       router.push("/news");
     }
   };
@@ -42,6 +39,7 @@ const LoginPage = () => {
     if (error) setMessage(error.message);
     setLoading(false);
   };
+  
   const handleAppleLogin = async () => {
     setMessage(null);
     setLoading(true);
@@ -56,10 +54,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center bg-gray-50 py-16">
-      <div className="flex w-full max-w-4xl items-stretch shadow-lg rounded-[5px] overflow-hidden">
+    <div className="min-h-screen bg-background flex justify-center py-16">
+      <div className="flex w-full max-w-4xl items-stretch shadow-lg rounded-xl overflow-hidden">
         {/* Left Side: Login Form */}
-        <div className="flex-1 bg-white text-gray-900 flex flex-col justify-center px-10 md:px-20">
+        <div className="flex-1 bg-surface text-text-primary flex flex-col justify-center px-10 md:px-20">
           <div className="max-w-md w-full mx-auto">
             {/* Form Header */}
             <h2 className="text-2xl text-center font-bold mb-8">
@@ -67,83 +65,105 @@ const LoginPage = () => {
             </h2>
 
             {/* Login Form */}
-            <form className="space-y-4" onSubmit={handleLogin}>
+            <form className="space-y-6" onSubmit={handleLogin}>
               <div>
-                <label className="block mb-1 text-sm">Email address</label>
+                <label className="block mb-2 text-sm font-medium text-text-primary">
+                  Email address
+                </label>
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="input w-full"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div>
-                <label className="block mb-1 text-sm">Password</label>
+                <label className="block mb-1 text-sm font-medium text-text-primary">
+                  Password
+                </label>
                 <input
                   type="password"
                   placeholder="Password"
-                  className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="input w-full"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm text-gray-600">
+              <div className="flex items-center justify-between text-sm text-text-secondary">
                 <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="accent-purple-500" />
+                  <input type="checkbox" className="accent-primary" />
                   <span>Remember me</span>
                 </label>
-                <a href="#" className="text-purple-600 underline">
+                <a href="#" className="text-primary hover:text-primary-dark">
                   Forgot password?
                 </a>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-2 rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                className="btn-primary w-full py-3"
                 disabled={loading}
               >
                 {loading ? "Signing in..." : "Sign in"}
               </button>
             </form>
+            
             {/* Message display */}
-            {message && <div className="mt-2 text-center text-red-600">{message}</div>}
+            {message && (
+              <div className="mt-2 text-center text-error">
+                {message}
+              </div>
+            )}
 
             {/* New to the app link */}
             <div className="mt-4 text-center">
-              <span className="text-sm text-gray-700">New to the app? </span>
-              <a href="/signup" className="text-purple-600 text-sm underline hover:text-purple-700">Sign up here</a>
+              <span className="text-sm text-text-secondary">New to the app? </span>
+              <a href="/signup" className="text-primary hover:text-primary-dark text-sm underline">
+                Sign up here
+              </a>
             </div>
 
             {/* OR separator */}
             <div className="flex items-center my-6">
-              <hr className="flex-1 border-gray-300" />
-              <span className="px-4 text-gray-500">Or continue with</span>
-              <hr className="flex-1 border-gray-300" />
+              <div className="flex-1 border-t border-default"></div>
+              <span className="px-4 text-text-secondary">Or continue with</span>
+              <div className="flex-1 border-t border-default"></div>
             </div>
 
             {/* Social Buttons */}
             <div className="flex gap-4">
-              <button type="button" onClick={handleGoogleLogin} className="flex-1 flex items-center justify-center py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors">
+              <button 
+                type="button" 
+                onClick={handleGoogleLogin} 
+                className="btn-secondary flex-1 flex items-center justify-center py-2"
+                disabled={loading}
+              >
                 <FaGoogle className="mr-2" /> Google
               </button>
-              <button type="button" onClick={handleAppleLogin} className="flex-1 flex items-center justify-center py-2 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors">
+              <button 
+                type="button" 
+                onClick={handleAppleLogin} 
+                className="btn-secondary flex-1 flex items-center justify-center py-2"
+                disabled={loading}
+              >
                 <FaApple className="mr-2" /> Apple
               </button>
             </div>
           </div>
         </div>
+        
         {/* Right Side: Video */}
-        <div className="flex-1 hidden md:flex items-center justify-center bg-white rounded-[5px] ">
+        <div className="flex-1 hidden md:flex items-center justify-center bg-surface rounded-xl">
           <video
             src="https://www.pexels.com/download/video/7262671/"
             autoPlay
             loop
             muted
-            className="w-full object-cover rounded-[5px]"
+            className="w-full object-cover rounded-xl"
             style={{ height: "100%" }}
           >
             Your browser does not support the video tag.

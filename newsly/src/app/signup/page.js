@@ -31,7 +31,6 @@ const SignUpPage = () => {
       return;
     }
 
-
     setMessage("Signup successful! Check your email to confirm your account.");
     setLoading(false);
   };

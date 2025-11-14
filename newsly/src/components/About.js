@@ -4,13 +4,13 @@ const AboutSection = () => {
   return (
     <section className="w-full py-16">
       {/* Title */}
-      <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8">About Newsly</h2>
+      <h2 className="text-3xl md:text-4xl font-semibold text-center mb-8 text-text-primary">About Newsly</h2>
 
       {/* Card Container */}
-      <div className="mx-auto max-w-6xl bg-gray-100 rounded-2xl shadow-sm p-6 md:p-10">
+      <div className="mx-auto max-w-6xl bg-surface rounded-2xl shadow-sm p-6 md:p-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left: Description */}
-          <div className="text-gray-700 leading-relaxed space-y-4">
+          <div className="text-text-primary leading-relaxed space-y-4">
             <p>
               Newsly is your go-to platform for staying informed with the latest
               headlines from India’s top 7 trusted sources. Browse curated
@@ -36,7 +36,7 @@ const AboutSection = () => {
             {/* Play button overlay */}
             <button
               aria-label="Play video"
-              className="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-pink-600 shadow-lg transition hover:scale-105"
+              className="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg transition hover:scale-105"
               style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">

@@ -68,10 +68,10 @@ export default function SuggestedNewsPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading suggested news...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-text-primary">Loading suggested news...</p>
         </div>
       </div>
     );
@@ -79,9 +79,9 @@ export default function SuggestedNewsPage() {
 
   if (error) {
     return (
-      <div className="p-6">
-        <h2 className="font-semibold text-lg mb-4">Suggested News</h2>
-        <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-md">
+      <div className="p-6 bg-background">
+        <h2 className="text-2xl font-bold text-text-primary mb-4">Suggested News</h2>
+        <div className="bg-error/10 border border-error/20 text-error p-4 rounded-lg">
           {error}
         </div>
       </div>
@@ -89,36 +89,39 @@ export default function SuggestedNewsPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-background min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <h2 className="font-semibold text-2xl mb-4">Suggested News</h2>
+        <h2 className="text-3xl font-bold text-text-primary mb-6">Suggested News</h2>
         
         {suggestedCategories.length > 0 && (
           <div className="mb-6">
-            <p className="text-gray-600 mb-2">Showing news for your suggested categories:</p>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-text-primary mb-4">Showing news for your suggested categories:</p>
+            <div className="flex flex-wrap gap-2 mb-4">
               {suggestedCategories.map((category, index) => (
                 <span 
                   key={index}
-                  className="px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full capitalize"
+                  className="category-tag"
                 >
                   {category}
                 </span>
               ))}
             </div>
+            <p className="text-sm text-text-secondary">
+              News fetched from category-specific sources for better relevance
+            </p>
           </div>
         )}
 
         {suggestedCategories.length === 0 ? (
           <div className="text-center py-12">
-            <div className="bg-gray-50 rounded-lg p-8">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Suggested Categories</h3>
-              <p className="text-gray-600 mb-4">
+            <div className="card p-8 max-w-md mx-auto">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">No Suggested Categories</h3>
+              <p className="text-text-primary mb-6">
                 You haven't set up any suggested news categories yet. Update your profile to see personalized news here.
               </p>
               <button
                 onClick={() => router.push('/profile')}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                className="btn-primary"
               >
                 Update Profile
               </button>
@@ -126,9 +129,9 @@ export default function SuggestedNewsPage() {
           </div>
         ) : suggestedNews.length === 0 ? (
           <div className="text-center py-12">
-            <div className="bg-gray-50 rounded-lg p-8">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No News Found</h3>
-              <p className="text-gray-600">
+            <div className="card p-8 max-w-md mx-auto">
+              <h3 className="text-xl font-semibold text-text-primary mb-4">No News Found</h3>
+              <p className="text-text-primary">
                 No news articles found for your suggested categories at the moment. Check back later!
               </p>
             </div>

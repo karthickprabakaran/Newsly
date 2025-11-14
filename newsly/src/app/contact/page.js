@@ -11,16 +11,16 @@ const ContactPage = () => {
     email: "",
     featureType: "feature",
     subject: "",
-    description: ""
+    description: "",
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -30,31 +30,35 @@ const ContactPage = () => {
     setMessage("");
 
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
+      const response = await fetch("/api/contact", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
           userId: user?.id || null,
-          userEmail: user?.email || formData.email
-        })
+          userEmail: user?.email || formData.email,
+        }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage("Thank you! Your feature request has been submitted successfully.");
+        setMessage(
+          "Thank you! Your feature request has been submitted successfully.",
+        );
         setFormData({
           name: "",
           email: "",
           featureType: "feature",
           subject: "",
-          description: ""
+          description: "",
         });
       } else {
-        setMessage(data.error || "Failed to submit your request. Please try again.");
+        setMessage(
+          data.error || "Failed to submit your request. Please try again.",
+        );
       }
     } catch (error) {
       setMessage("An error occurred. Please try again later.");
@@ -64,16 +68,23 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Newsly</h1>
-          <p className="text-gray-600 mb-8">Have an idea for a new feature? We'd love to hear from you!</p>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-2xl mx-auto p-8">
+        <div className="">
+          <h1 className="text-3xl font-bold text-text-primary mb-2">
+            Contact Newsly
+          </h1>
+          <p className="text-text-primary mb-8">
+            Have an idea for a new feature? We'd love to hear from you!
+          </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-text-primary mb-2"
+                >
                   Your Name
                 </label>
                 <input
@@ -83,13 +94,16 @@ const ContactPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  className="input w-full"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-text-primary mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -99,18 +113,23 @@ const ContactPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                  className="input w-full"
                   placeholder="john@example.com"
                   disabled={!!user?.email}
                 />
                 {user?.email && (
-                  <p className="text-xs text-gray-500 mt-1">Using your account email</p>
+                  <p className="text-xs text-text-secondary mt-1">
+                    Using your account email
+                  </p>
                 )}
               </div>
             </div>
 
             <div>
-              <label htmlFor="featureType" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="featureType"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Request Type
               </label>
               <select
@@ -118,7 +137,7 @@ const ContactPage = () => {
                 name="featureType"
                 value={formData.featureType}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                className="input w-full"
               >
                 <option value="feature">Feature Request</option>
                 <option value="bug">Bug Report</option>
@@ -128,7 +147,10 @@ const ContactPage = () => {
             </div>
 
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="subject"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Subject
               </label>
               <input
@@ -138,13 +160,16 @@ const ContactPage = () => {
                 value={formData.subject}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition"
+                className="input w-full"
                 placeholder="Brief description of your request"
               />
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Description
               </label>
               <textarea
@@ -154,7 +179,7 @@ const ContactPage = () => {
                 onChange={handleChange}
                 required
                 rows={6}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition resize-none"
+                className="input w-full resize-none"
                 placeholder="Please describe your feature request in detail..."
               />
             </div>
@@ -162,14 +187,20 @@ const ContactPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-purple-600 text-white py-3 px-4 rounded-md hover:bg-purple-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
+              className="btn-primary w-full py-3"
             >
               {loading ? "Submitting..." : "Submit Request"}
             </button>
           </form>
 
           {message && (
-            <div className={`mt-6 p-4 rounded-md ${message.includes("success") ? "bg-green-50 text-green-800 border border-green-200" : "bg-red-50 text-red-800 border border-red-200"}`}>
+            <div
+              className={`mt-6 p-4 rounded-md ${
+                message.includes("success")
+                  ? "bg-success/10 text-success border border-success/20"
+                  : "bg-error/10 text-error border border-error/20"
+              }`}
+            >
               {message}
             </div>
           )}
@@ -178,7 +209,7 @@ const ContactPage = () => {
         <div className="mt-8 text-center">
           <button
             onClick={() => router.back()}
-            className="text-purple-600 hover:text-purple-700 font-medium"
+            className="text-text-secondary hover:text-primary transition-colors font-medium"
           >
             ← Back to previous page
           </button>
@@ -189,3 +220,4 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
+
