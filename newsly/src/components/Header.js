@@ -134,14 +134,15 @@ const Header = ({ transparent = false }) => {
         <div className="flex items-center gap-4">
           {/* User card or auth buttons */}
           {loadingUser ? null : user ? (
-            <div className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded-xl">
+            <div onClick={() => router.push('/profile')} className="flex items-center gap-2 bg-gray-100 px-2 py-1 rounded-xl cursor-pointer">
+              {/* clicking the user card navigates to the profile page */}
               <img
                 src={user?.user_metadata?.avatar_url || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user?.user_metadata?.full_name || user.email || "User")}
                 alt="avatar"
                 className="w-8 h-8 rounded-lg object-cover"
               />
               <span className="text-sm font-medium text-gray-900 px-1">{user?.user_metadata?.full_name || user.email}</span>
-              <button onClick={handleLogout} className="text-xs text-purple-600 underline ml-2">Logout</button>
+              <button onClick={(e) => { e.stopPropagation(); handleLogout(); }} className="text-xs text-purple-600 underline ml-2">Logout</button>
             </div>
           ) : (
             <div className="flex items-center gap-2">

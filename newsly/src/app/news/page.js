@@ -106,7 +106,7 @@ export default function NewsPage() {
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-100">
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
         <h2 className="font-semibold text-lg">Latest News</h2>
