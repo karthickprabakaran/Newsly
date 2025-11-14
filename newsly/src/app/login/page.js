@@ -2,7 +2,7 @@
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../../../util/supabase";
+import { supabase } from "../../../util/supabase";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");

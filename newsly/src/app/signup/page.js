@@ -1,7 +1,7 @@
 "use client";
 import { FaGoogle, FaApple } from "react-icons/fa";
 import { useState } from "react";
-import { supabase } from "../../../../util/supabase";
+import { supabase } from "../../../util/supabase";
 
 const SignUpPage = () => {
   const [fullName, setFullName] = useState("");
