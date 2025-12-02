@@ -30,7 +30,7 @@ const AboutSection = () => {
 
           {/* Right: Media with Play Button */}
           <div className="relative overflow-hidden rounded-xl">
-            <div className="w-full aspect-video rounded-xl bg-gradient-to-br from-fuchsia-700 via-purple-700 to-indigo-700">
+            <div className="w-full aspect-video rounded-xl bg-gradient-to-br from-primary via-secondary to-black">
               {/* Optional preview image could be placed here instead of gradient */}
             </div>
             {/* Play button overlay */}

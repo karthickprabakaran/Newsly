@@ -62,7 +62,7 @@ const SourceCard = ({ name, logo, category, url }) => (
       />
     </div>
     <div className="text-sm text-text-secondary mb-6">{category}</div>
-    <div className="mx-auto inline-block rounded-xl bg-background px-5 py-3 text-text-primary text-sm font-medium group-hover:bg-gray-200">
+    <div className="mx-auto inline-block rounded-xl bg-background px-5 py-3 text-text-primary text-sm font-medium group-hover:bg-secondary-light">
       {name}
     </div>
   </a>

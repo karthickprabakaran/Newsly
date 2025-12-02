@@ -78,15 +78,21 @@ const Header = ({ transparent = false }) => {
                   )}
                 </button>
                 {showDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-surface border border-default rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
-                    <div className="p-3 border-b border-default flex justify-between items-center">
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowDropdown(false)}
+                  />
+                )}
+                {showDropdown && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-surface border border-default rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto bg-[#E5E5E5]">
+                    <div className="p-3 border-b border-default flex justify-between items-center bg-surface">
                       <span className="text-sm font-semibold text-text-primary">
                         Filter by Category
                       </span>
                       {selectedCategories.length > 0 && (
                         <button
                           onClick={clearCategories}
-                          className="text-xs text-primary hover:text-primary-dark"
+                          className="text-xs text-primary hover:text-primary-dark font-medium"
                         >
                           Clear all
                         </button>
@@ -104,7 +110,7 @@ const Header = ({ transparent = false }) => {
                           return (
                             <label
                               key={category}
-                              className="flex items-center p-2 hover:bg-background cursor-pointer rounded"
+                              className="flex items-center p-2 hover:bg-secondary-light cursor-pointer rounded transition-colors"
                             >
                               <input
                                 type="checkbox"
@@ -222,15 +228,15 @@ const Header = ({ transparent = false }) => {
                     )}
                   </button>
                   {showDropdown && (
-                    <div className="absolute top-full left-0 mt-2 w-full bg-surface border border-default rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
-                      <div className="p-3 border-b border-default flex justify-between items-center">
+                    <div className="absolute top-full left-0 mt-2 w-full bg-surface border border-default rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
+                      <div className="p-3 border-b border-default flex justify-between items-center bg-surface">
                         <span className="text-sm font-semibold text-text-primary">
                           Filter by Category
                         </span>
                         {selectedCategories.length > 0 && (
                           <button
                             onClick={clearCategories}
-                            className="text-xs text-primary hover:text-primary-dark"
+                            className="text-xs text-primary hover:text-primary-dark font-medium"
                           >
                             Clear all
                           </button>
@@ -248,7 +254,7 @@ const Header = ({ transparent = false }) => {
                             return (
                               <label
                                 key={category}
-                                className="flex items-center p-2 hover:bg-background cursor-pointer rounded"
+                                className="flex items-center p-2 hover:bg-secondary-light cursor-pointer rounded transition-colors"
                               >
                                 <input
                                   type="checkbox"
@@ -295,4 +301,3 @@ const Header = ({ transparent = false }) => {
 };
 
 export default Header;
-

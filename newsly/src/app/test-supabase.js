@@ -35,7 +35,7 @@ export default function TestSupabase() {
       {result && (
         <pre>Result: {JSON.stringify(result, null, 2)}</pre>
       )}
-      {error && <pre style={{ color: "red" }}>Error: {error}</pre>}
+      {error && <pre className="text-error">Error: {error}</pre>}
     </div>
   );
 }

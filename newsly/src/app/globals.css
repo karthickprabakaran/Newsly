@@ -27,7 +27,7 @@
 
 /* Custom component classes */
 .btn-primary {
-  background-color: #3B82F6;
+  background-color: #F81539;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
@@ -36,13 +36,13 @@
 }
 
 .btn-primary:hover {
-  background-color: #2563EB;
+  background-color: #D01230;
 }
 
 .btn-secondary {
   background-color: #FFFFFF;
   border: 1px solid #E5E7EB;
-  color: #111111;
+  color: #3E3232;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-weight: 500;
@@ -65,7 +65,7 @@
   border: 1px solid #E5E7EB;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  color: #111111;
+  color: #3E3232;
   transition: all 0.2s;
 }
 
@@ -75,8 +75,8 @@
 
 .input:focus {
   outline: none;
-  border-color: #3B82F6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: #F81539;
+  box-shadow: 0 0 0 2px rgba(248, 21, 57, 0.2);
 }
 
 .category-tag {
@@ -85,7 +85,7 @@
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: #93C5FD;
-  color: #3B82F6;
+  background-color: #FDD4C7;
+  color: #FC4308;
   border-radius: 9999px;
 }

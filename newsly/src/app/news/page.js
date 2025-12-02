@@ -103,25 +103,25 @@ export default function NewsPage() {
 
   if (isCheckingAuth) return null;
   if (loading) return <div className="p-6">Loading news...</div>;
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) return <div className="p-6 text-error">{error}</div>;
 
   return (
-    <div className="p-6 bg-gray-100">
+    <div className="p-6 bg-background">
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-        <h2 className="font-semibold text-lg">Latest News</h2>
+        <h2 className="font-semibold text-lg text-text-primary">Latest News</h2>
         <input
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search news by title, source, or keywords"
-          className="w-full md:w-80 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="input w-full md:w-80"
         />
       </div>
 
       {/* News Grid */}
       {paginatedNews.length === 0 ? (
-        <div className="text-center text-gray-500 py-12">
+        <div className="text-center text-text-secondary py-12">
           {selectedCategories.length > 0 || searchTerm
             ? "No news matched your filters."
             : "No news available."}
@@ -159,17 +159,17 @@ export default function NewsPage() {
       {filteredNews.length > 0 && (
         <div className="flex justify-center gap-4 mt-8">
           <button
-            className="px-3 py-1 rounded disabled:bg-gray-200 bg-gray-100 font-bold text-black"
+            className="btn-secondary px-3 py-1 font-bold text-black disabled:opacity-50"
             disabled={page <= 1}
             onClick={() => setPage(page - 1)}
           >
             Previous
           </button>
-          <span className="font-medium">
+          <span className="font-medium text-text-primary">
             {page} / {filteredTotalPages}
           </span>
           <button
-            className="px-3 py-1 rounded disabled:bg-gray-200 bg-gray-100 font-bold text-black"
+            className="btn-secondary px-3 py-1 font-bold text-black disabled:opacity-50"
             disabled={page >= filteredTotalPages}
             onClick={() => setPage(page + 1)}
           >
