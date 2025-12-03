@@ -135,12 +135,13 @@ export async function GET(req) {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                 'Accept': 'application/rss+xml, application/xml;q=0.9,*/*;q=0.8',
               },
+              signal: AbortSignal.timeout(10000), // 10 second timeout
             });
             if (!response.ok) throw new Error('Failed to fetch RSS');
             const xmlText = await response.text();
             return parseRss(xmlText, source);
           } catch (error) {
-            console.error(`Error fetching ${source.name}:`, error);
+            console.error(`Error fetching ${source.name}:`, error.message);
             return [];
           }
         })

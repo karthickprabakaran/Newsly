@@ -1,10 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl
   
-  // Define protected routes
+  // Only block obvious non-authenticated access to protected routes
+  // Let client-side handle most authentication
   const protectedRoutes = ['/news', '/profile', '/suggestednews']
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
   
@@ -18,32 +18,14 @@ export async function middleware(req) {
     return NextResponse.next()
   }
   
-  // Create Supabase client with cookie handling
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      global: {
-        headers: {
-          cookie: req.headers.get('cookie') || '',
-        },
-      },
-    }
-  )
+  // Only redirect if there's no auth cookie at all
+  const authCookie = req.cookies.get('sb-access-token') || req.cookies.get('supabase.auth.token')
   
-  // Get session
-  const { data: { session } } = await supabase.auth.getSession()
-  
-  // If trying to access protected route without session, redirect to login
-  if (isProtectedRoute && !session) {
+  // If trying to access protected route without any auth cookie, redirect to login
+  if (isProtectedRoute && !authCookie) {
     const loginUrl = new URL('/login', req.url)
     loginUrl.searchParams.set('redirectedFrom', pathname)
     return NextResponse.redirect(loginUrl)
-  }
-  
-  // If user is logged in and trying to access login/signup, redirect to news
-  if (session && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/news', req.url))
   }
   
   return NextResponse.next()
