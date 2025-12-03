@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl
@@ -18,26 +17,21 @@ export async function middleware(req) {
   if (pathname === '/') {
     return NextResponse.next()
   }
-
-  // Create Supabase server client for middleware
-  const supabase = createServerClient(
+  
+  // Create Supabase client with cookie handling
+  const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
-      cookies: {
-        getAll() {
-          return req.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            req.cookies.set(name, value)
-          })
+      global: {
+        headers: {
+          cookie: req.headers.get('cookie') || '',
         },
       },
     }
   )
-
-  // Refresh session if expired
+  
+  // Get session
   const { data: { session } } = await supabase.auth.getSession()
   
   // If trying to access protected route without session, redirect to login
