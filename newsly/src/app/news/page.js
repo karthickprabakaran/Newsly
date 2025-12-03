@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "../../../../util/supabase";
+import { supabase } from "../../../util/supabase";
 import { useCategory } from "@/context/CategoryContext";
 import StandardNewsCard from "@/components/StandardNewsCard";
 import SimpleNewsCard from "@/components/SimpleNewsCard";
