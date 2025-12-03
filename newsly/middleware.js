@@ -3,8 +3,7 @@ import { NextResponse } from 'next/server'
 export async function middleware(req) {
   const { pathname } = req.nextUrl
   
-  // Only block obvious non-authenticated access to protected routes
-  // Let client-side handle most authentication
+  // Define protected routes
   const protectedRoutes = ['/news', '/profile', '/suggestednews']
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
   
@@ -18,14 +17,19 @@ export async function middleware(req) {
     return NextResponse.next()
   }
   
-  // Only redirect if there's no auth cookie at all
-  const authCookie = req.cookies.get('sb-access-token') || req.cookies.get('supabase.auth.token')
+  // Check our simple login cookie
+  const isLoggedIn = req.cookies.get('user-logged-in')?.value === 'true'
   
-  // If trying to access protected route without any auth cookie, redirect to login
-  if (isProtectedRoute && !authCookie) {
+  // If trying to access protected route without login cookie, redirect to login
+  if (isProtectedRoute && !isLoggedIn) {
     const loginUrl = new URL('/login', req.url)
     loginUrl.searchParams.set('redirectedFrom', pathname)
     return NextResponse.redirect(loginUrl)
+  }
+  
+  // If user is logged in and trying to access login/signup, redirect to news
+  if (isLoggedIn && (pathname === '/login' || pathname === '/signup')) {
+    return NextResponse.redirect(new URL('/news', req.url))
   }
   
   return NextResponse.next()

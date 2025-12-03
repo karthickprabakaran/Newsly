@@ -25,6 +25,10 @@ export const SessionProvider = ({ children }) => {
     await supabase.auth.signOut();
     setUser(null);
     setSessionStartTime(null);
+    // Clear cookie on logout
+    if (typeof window !== 'undefined') {
+      document.cookie = 'user-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+    }
     router.push("/login");
   }, [router]);
 
@@ -64,6 +68,15 @@ export const SessionProvider = ({ children }) => {
       if (session?.user) {
         setUser(session.user);
         resetSessionTimer();
+        // Set a cookie for middleware to check
+        if (typeof window !== 'undefined') {
+          document.cookie = 'user-logged-in=true; path=/; max-age=86400; SameSite=Lax';
+        }
+      } else {
+        // Clear cookie on logout
+        if (typeof window !== 'undefined') {
+          document.cookie = 'user-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        }
       }
       setLoading(false);
     };
@@ -77,6 +90,10 @@ export const SessionProvider = ({ children }) => {
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setSessionStartTime(null);
+        // Clear cookie on sign out
+        if (typeof window !== 'undefined') {
+          document.cookie = 'user-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+        }
       }
     });
 
