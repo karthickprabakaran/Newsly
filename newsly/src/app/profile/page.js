@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "../../../util/supabase"; // client anon key
+import { supabase } from "../../../../util/supabase"; // client anon key
 
 const PREDEFINED_CATEGORIES = [
   "sports",
