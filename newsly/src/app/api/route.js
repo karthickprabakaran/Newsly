@@ -1,5 +1,3 @@
-import { ApolloServer } from "@apollo/server";
-import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import RSSParser from "rss-parser";
 
 const NEWS_SOURCES = [
@@ -35,49 +33,32 @@ const NEWS_SOURCES = [
   },
 ];
 
-const typeDefs = `#graphql
-  type NewsArticle {
-    title: String
-    link: String
-    pubDate: String
-    content: String
-    source: String
-    category: String
-  }
-
-  type Query {
-    allNews: [NewsArticle]
-  }
-`;
-
 const rssParser = new RSSParser();
 
-const resolvers = {
-  Query: {
-    allNews: async () => {
-      const articles = (
-        await Promise.all(
-          NEWS_SOURCES.map(async (source) => {
-            try {
-              const feed = await rssParser.parseURL(source.url);
-              return feed.items.map((item) => ({
-                title: item.title,
-                link: item.link,
-                pubDate: item.pubDate,
-                content: item.content || item.contentSnippet || "",
-                source: source.name,
-                category: source.category,
-              }));
-            } catch {
-              return [];
-            }
-          }),
-        )
-      ).flat();
-      return articles;
-    },
-  },
-};
+export async function GET() {
+  try {
+    const articles = (
+      await Promise.all(
+        NEWS_SOURCES.map(async (source) => {
+          try {
+            const feed = await rssParser.parseURL(source.url);
+            return feed.items.map((item) => ({
+              title: item.title,
+              link: item.link,
+              pubDate: item.pubDate,
+              content: item.content || item.contentSnippet || "",
+              source: source.name,
+              category: source.category,
+            }));
+          } catch {
+            return [];
+          }
+        }),
+      )
+    ).flat();
 
-const server = new ApolloServer({ typeDefs, resolvers });
-export const POST = startServerAndCreateNextHandler(server);
+    return Response.json({ articles });
+  } catch (e) {
+    return Response.json({ error: "Failed to fetch news" }, { status: 500 });
+  }
+}
