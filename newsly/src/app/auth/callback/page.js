@@ -11,7 +11,7 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       const { data, error } = await supabase.auth.getSession();
-      
+
       if (error) {
         console.error("Error getting session:", error);
         router.push("/login");
@@ -40,3 +40,4 @@ const AuthCallback = () => {
 };
 
 export default AuthCallback;
+
